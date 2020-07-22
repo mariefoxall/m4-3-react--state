@@ -3,6 +3,10 @@ import styled from "styled-components";
 
 const Typeahead = ({ categories, suggestions, handleSelect }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = React.useState(
+    0
+  );
+
   let matchArray = [];
   if (searchTerm.length > 1) {
     matchArray = suggestions.filter((book) =>
@@ -20,8 +24,19 @@ const Typeahead = ({ categories, suggestions, handleSelect }) => {
           value={searchTerm}
           onChange={(ev) => setSearchTerm(ev.target.value)}
           onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              handleSelect(searchTerm);
+            switch (ev.key) {
+              case "Enter": {
+                handleSelect(matchArray[selectedSuggestionIndex].title);
+                return;
+              }
+              case "ArrowUp": {
+                setSelectedSuggestionIndex(selectedSuggestionIndex - 1);
+                return;
+              }
+              case "ArrowDown": {
+                setSelectedSuggestionIndex(selectedSuggestionIndex + 1);
+                return;
+              }
             }
           }}
         />
@@ -29,18 +44,28 @@ const Typeahead = ({ categories, suggestions, handleSelect }) => {
       </InputClear>
       {matchArray.length > 0 && (
         <SuggestionBox>
-          {matchArray.map((book) => {
+          {matchArray.map((book, index) => {
             const searchTermIndex = book.title.toLowerCase().search(searchTerm);
             const secondHalfIndex = searchTermIndex + searchTerm.length;
             console.log(secondHalfIndex);
             const secondHalf = book.title.slice(secondHalfIndex);
             const firstHalf = book.title.slice(0, secondHalfIndex);
+            let isSelected = false;
+            if (index === selectedSuggestionIndex) {
+              isSelected = true;
+            }
+            // const isSelected = index === selectedSuggestionIndex;
             return (
               <SuggestedBook
                 key={book.id}
+                style={{
+                  background: isSelected
+                    ? "hsla(50deg, 100%, 80%, 0.25)"
+                    : "transparent",
+                }}
                 onClick={() => handleSelect(book.title)}
+                onMouseEnter={() => setSelectedSuggestionIndex(index)}
               >
-                {/* {book.title} */}
                 <span>
                   {firstHalf}
                   <Prediction>{secondHalf}</Prediction>
@@ -96,9 +121,6 @@ const ClearButton = styled.button`
 const SuggestedBook = styled.li`
   margin: 5px 0;
   padding: 10px;
-  &:hover {
-    background-color: lightgoldenrodyellow;
-  }
 `;
 
 const Prediction = styled.span`
