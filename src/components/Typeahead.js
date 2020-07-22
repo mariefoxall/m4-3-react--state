@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Typeahead = ({ suggestions, handleSelect }) => {
+const Typeahead = ({ categories, suggestions, handleSelect }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   let matchArray = [];
   if (searchTerm.length > 1) {
@@ -9,7 +9,6 @@ const Typeahead = ({ suggestions, handleSelect }) => {
       book.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
-  //   const matchExists
 
   return (
     <SearchField>
@@ -24,7 +23,6 @@ const Typeahead = ({ suggestions, handleSelect }) => {
             if (ev.key === "Enter") {
               handleSelect(searchTerm);
             }
-            //   setSearchTerm(searchTerm + ev.key);
           }}
         />
         <ClearButton onClick={() => setSearchTerm("")}>Clear</ClearButton>
@@ -32,12 +30,23 @@ const Typeahead = ({ suggestions, handleSelect }) => {
       {matchArray.length > 0 && (
         <SuggestionBox>
           {matchArray.map((book) => {
+            const searchTermIndex = book.title.toLowerCase().search(searchTerm);
+            const secondHalfIndex = searchTermIndex + searchTerm.length;
+            console.log(secondHalfIndex);
+            const secondHalf = book.title.slice(secondHalfIndex);
+            const firstHalf = book.title.slice(0, secondHalfIndex);
             return (
               <SuggestedBook
                 key={book.id}
                 onClick={() => handleSelect(book.title)}
               >
-                {book.title}
+                {/* {book.title} */}
+                <span>
+                  {firstHalf}
+                  <Prediction>{secondHalf}</Prediction>
+                  <Italics> in </Italics>
+                  <SuggestionCategory>{book.categoryId}</SuggestionCategory>
+                </span>
               </SuggestedBook>
             );
           })}
@@ -90,6 +99,19 @@ const SuggestedBook = styled.li`
   &:hover {
     background-color: lightgoldenrodyellow;
   }
+`;
+
+const Prediction = styled.span`
+  font-weight: bold;
+`;
+
+const SuggestionCategory = styled.span`
+  color: purple;
+  font-style: italic;
+`;
+
+const Italics = styled.span`
+  font-style: italic;
 `;
 
 export default Typeahead;
