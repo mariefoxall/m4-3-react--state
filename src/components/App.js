@@ -1,7 +1,6 @@
 import React from "react";
 import data from "../data";
 import styled from "styled-components";
-
 import GlobalStyles from "./GlobalStyles";
 
 import Typeahead from "./Typeahead";
@@ -14,7 +13,7 @@ const App = (props) => {
         <Typeahead
           suggestions={data.books}
           handleSelect={(suggestion) => {
-            window.alert(suggestion);
+            window.alert(`Selected: ${suggestion}`);
           }}
         />
       </Wrapper>
