@@ -9,6 +9,7 @@ const Typeahead = ({ suggestions, handleSelect }) => {
       book.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
+  //   const matchExists
 
   return (
     <SearchField>
@@ -28,19 +29,20 @@ const Typeahead = ({ suggestions, handleSelect }) => {
         />
         <ClearButton onClick={() => setSearchTerm("")}>Clear</ClearButton>
       </InputClear>
-      <SuggestionBox>
-        {matchArray.map((book) => {
-          // if(matchArray.length > 0)
-          return (
-            <SuggestedBook
-              key={book.id}
-              onClick={() => handleSelect(book.title)}
-            >
-              {book.title}
-            </SuggestedBook>
-          );
-        })}
-      </SuggestionBox>
+      {matchArray.length > 0 && (
+        <SuggestionBox>
+          {matchArray.map((book) => {
+            return (
+              <SuggestedBook
+                key={book.id}
+                onClick={() => handleSelect(book.title)}
+              >
+                {book.title}
+              </SuggestedBook>
+            );
+          })}
+        </SuggestionBox>
+      )}
     </SearchField>
   );
 };
